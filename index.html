@@ -438,7 +438,117 @@ function demo() {
   );
 }
 
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+
+<script src="./astro.js"></script>
+
+<script>
+
+const panelAstro = document.createElement("div");
+
+panelAstro.style.cssText = `
+  width:100%;
+  max-width:450px;
+  margin:25px auto;
+  padding:20px;
+  border:1px solid #927ca7;
+  border-radius:15px;
+  color:#f4d49b;
+  line-height:2;
+`;
+
+panelAstro.hidden = true;
+
+document.getElementById("resultPlace")
+  .parentElement.after(panelAstro);
+
+const mostrarUniversoOriginal = showUniverse;
+
+showUniverse = function(date, time, place) {
+
+  mostrarUniversoOriginal(date, time, place);
+
+  panelAstro.replaceChildren();
+  panelAstro.hidden = true;
+
+};
+
+demo = function() {
+
+  showUniverse(
+    "2026-11-25",
+    "23:33:16",
+    "Funes, Santa Fe, Argentina"
+  );
+
+  panelAstro.hidden = false;
+
+  try {
+
+    const carta = IngeniaAstro.calcularCarta(
+      "2026-11-26T02:33:16Z"
+    );
+
+    const titulo = document.createElement("h3");
+
+    titulo.textContent = "✧ Tu mapa planetario";
+
+    panelAstro.appendChild(titulo);
+
+    carta.planetas.forEach(p => {
+
+      const fila = document.createElement("div");
+
+      fila.style.cssText = `
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        border-bottom:1px solid #927ca744;
+        padding:8px 0;
+        font-size:14px;
+      `;
+
+      const nombre = document.createElement("span");
+
+      nombre.textContent =
+        p.glifo + " " + p.planeta;
+
+      const posicion = document.createElement("span");
+
+      posicion.textContent =
+        p.simbolo + " " + p.signo + " " +
+        p.grado + "° " + p.minuto + "′";
+
+      fila.append(nombre, posicion);
+
+      panelAstro.appendChild(fila);
+
+    });
+
+    const nota = document.createElement("p");
+
+    nota.style.fontSize = "12px";
+
+    nota.textContent =
+      "Zodiaco tropical geocentrico. " +
+      "Calculo experimental de INGENIA.";
+
+    panelAstro.appendChild(nota);
+
+  } catch(error) {
+
+    panelAstro.textContent =
+      "Error de calculo: " + error.message;
+
+  }
+
+};
+
 </script>
 
 </body>
 </html>
+
