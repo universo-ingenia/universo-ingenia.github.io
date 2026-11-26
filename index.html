@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INGENIA | Astrología & Tarot</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #49345f 0%,
+    #281b3b 35%,
+    #1e152e 75%
+  );
+  color: #f4d49b;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+#stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  background: #fff3d6;
+  border-radius: 50%;
+  animation: twinkle 5s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.15; }
+  to { opacity: 0.85; }
+}
+
+.portal {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 35px 20px;
+}
+
+.symbol {
+  width: 210px;
+  max-width: 65vw;
+  margin-bottom: 45px;
+  filter: drop-shadow(0 0 25px #d7b77844);
+}
+
+.spiral {
+  transform-origin: 100px 100px;
+  animation: rotate 90s linear infinite;
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 9px;
+  margin: 0 0 18px;
+}
+
+.subtitle {
+  color: #e0cdec;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.line {
+  width: 40px;
+  height: 1px;
+  background: #e6c58b;
+  margin: 25px auto;
+}
+
+.motto {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 20px;
+  color: #fff3e3;
+}
+
+button {
+  margin-top: 35px;
+  padding: 14px 32px;
+  border: 1px solid #c9ab79;
+  border-radius: 30px;
+  background: transparent;
+  color: #f4d49b;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+button:hover {
+  background: #f4d49b;
+  color: #21162f;
+  box-shadow: 0 0 25px #e6c58b55;
+}
+
+#birth {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spiral, .star {
+    animation: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+
+<main class="portal" id="welcome">
+
+  <svg class="symbol" viewBox="0 0 200 200">
+    <defs>
+      <path id="arm"
+        d="M100 87
+           C145 64 130 24 89 14
+           C156 8 188 69 147 111
+           C128 128 107 113 100 87Z"/>
+    </defs>
+
+    <g class="spiral" fill="#f4d49b">
+      <use href="#arm"/>
+      <use href="#arm" transform="rotate(90 100 100)"/>
+      <use href="#arm" transform="rotate(180 100 100)"/>
+      <use href="#arm" transform="rotate(270 100 100)"/>
+    </g>
+
+    <path fill="#fff4d6"
+      d="M100 83 L105 95 L117 100
+         L105 105 L100 117 L95 105
+         L83 100 L95 95 Z"/>
+  </svg>
+
+  <h1>INGENIA</h1>
+
+  <div class="subtitle">
+    ASTROLOGÍA &amp; TAROT
+  </div>
+
+  <div class="line"></div>
+
+  <div class="motto">
+    Una vuelta por el universo
+  </div>
+
+  <button onclick="beginJourney()">
+    Comenzar mi viaje
+  </button>
+
+</main>
+
+<section class="portal" id="birth">
+
+  <div style="font-size:60px;">✧</div>
+
+  <h2>Todo comienza en un instante.</h2>
+
+  <p style="color:#e0cdec;max-width:350px;">
+    Descubrí cómo estaba configurado
+    el cielo cuando naciste.
+  </p>
+
+  <div class="line"></div>
+
+  <p>Tu universo está por descubrirse.</p>
+
+  <button onclick="returnHome()">
+    Volver al portal
+  </button>
+
+</section>
+
+<script>
+
+const sky = document.getElementById("stars");
+
+for (let i = 0; i < 85; i++) {
+  const star = document.createElement("span");
+  star.className = "star";
+
+  const size = Math.random() * 2 + 0.5;
+
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
+  star.style.animationDelay = Math.random() * 5 + "s";
+
+  sky.appendChild(star);
+}
+
+function beginJourney() {
+  document.getElementById("welcome").style.display = "none";
+  document.getElementById("birth").style.display = "flex";
+}
+
+function returnHome() {
+  document.getElementById("birth").style.display = "none";
+  document.getElementById("welcome").style.display = "flex";
+}
+
+</script>
+
+</body>
+</html>
