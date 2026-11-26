@@ -20,6 +20,7 @@ body {
     #281b3b 35%,
     #1e152e 75%
   );
+  background-attachment: fixed;
   color: #f4d49b;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
@@ -77,6 +78,12 @@ h1 {
   margin: 0 0 18px;
 }
 
+h2 {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
 .subtitle {
   color: #e0cdec;
   font-size: 13px;
@@ -116,8 +123,87 @@ button:hover {
   box-shadow: 0 0 25px #e6c58b55;
 }
 
-#birth {
+#birth, #universe {
   display: none;
+}
+
+.birth-star {
+  font-size: 65px;
+  color: #fff0ce;
+  text-shadow: 0 0 30px #eac58b;
+}
+
+.description {
+  color: #e0cdec;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+.birth-form {
+  width: 100%;
+  max-width: 350px;
+  text-align: left;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 13px;
+  letter-spacing: 0.7px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #927ca7;
+  border-radius: 10px;
+  background: #ffffff08;
+  color: #fff3e3;
+  font-size: 16px;
+  outline: none;
+  color-scheme: dark;
+}
+
+input:focus {
+  border-color: #e6c58b;
+  box-shadow: 0 0 12px #e6c58b33;
+}
+
+input::placeholder {
+  color: #b9a6ca;
+}
+
+.birth-form button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.back {
+  border: none;
+  font-size: 12px;
+  color: #cbb8dd;
+  margin-top: 15px;
+}
+
+.note {
+  font-size: 11px;
+  color: #cbb8dd;
+  line-height: 1.6;
+  max-width: 350px;
+}
+
+.birth-summary {
+  color: #e0cdec;
+  line-height: 1.8;
+  padding: 20px;
+  border: 1px solid #927ca7;
+  border-radius: 15px;
+  max-width: 350px;
+  width: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -131,6 +217,8 @@ button:hover {
 <body>
 
 <div id="stars"></div>
+
+<!-- PORTADA -->
 
 <main class="portal" id="welcome">
 
@@ -168,29 +256,110 @@ button:hover {
     Una vuelta por el universo
   </div>
 
-  <button onclick="beginJourney()">
+  <button onclick="showScreen('birth')">
     Comenzar mi viaje
   </button>
 
 </main>
 
+<!-- PORTAL DE NACIMIENTO -->
+
 <section class="portal" id="birth">
 
-  <div style="font-size:60px;">✧</div>
+  <div class="birth-star">✧</div>
 
   <h2>Todo comienza en un instante.</h2>
 
-  <p style="color:#e0cdec;max-width:350px;">
+  <p class="description">
     Descubrí cómo estaba configurado
     el cielo cuando naciste.
   </p>
 
   <div class="line"></div>
 
-  <p>Tu universo está por descubrirse.</p>
+  <form class="birth-form" id="birthForm">
 
-  <button onclick="returnHome()">
-    Volver al portal
+    <div class="field">
+      <label for="birthDate">
+        Fecha de nacimiento
+      </label>
+      <input type="date" id="birthDate" required>
+    </div>
+
+    <div class="field">
+      <label for="birthTime">
+        Hora de nacimiento
+      </label>
+      <input type="time" id="birthTime" required>
+    </div>
+
+    <div class="field">
+      <label for="birthPlace">
+        Lugar de nacimiento
+      </label>
+      <input type="text" id="birthPlace"
+        placeholder="Ciudad, provincia, país"
+        maxlength="150"
+        autocomplete="off"
+        required>
+    </div>
+
+    <button type="submit">
+      Descubrir mi universo ✧
+    </button>
+
+    <button type="button" onclick="demo()">
+      Explorar con la carta de INGENIA
+    </button>
+
+  </form>
+
+  <p class="note">
+    Tus datos permanecen en esta pantalla.
+    No se envían a ningún servidor ni se guardan.
+  </p>
+
+  <button class="back" onclick="showScreen('welcome')">
+    ← Volver al portal
+  </button>
+
+</section>
+
+<!-- CONFIRMACIÓN -->
+
+<section class="portal" id="universe">
+
+  <div class="birth-star">✧</div>
+
+  <h2>Bienvenido a tu universo.</h2>
+
+  <p class="description">
+    Cada cielo es una invitación a explorar.
+  </p>
+
+  <div class="line"></div>
+
+  <div class="birth-summary">
+    <div id="resultDate"></div>
+    <div id="resultTime"></div>
+    <div id="resultPlace"></div>
+  </div>
+
+  <p class="description">
+    Tu mapa celeste está por descubrirse.
+  </p>
+
+  <p class="note">
+    Prototipo 0.2 · El cálculo astrológico
+    estará disponible en una próxima versión.
+  </p>
+
+  <button onclick="showScreen('birth')">
+    Volver a los datos
+  </button>
+
+  <button class="back" onclick="showScreen('welcome')">
+    ← Volver al inicio
   </button>
 
 </section>
@@ -214,14 +383,59 @@ for (let i = 0; i < 85; i++) {
   sky.appendChild(star);
 }
 
-function beginJourney() {
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("birth").style.display = "flex";
+function showScreen(screen) {
+
+  ["welcome", "birth", "universe"].forEach(id => {
+    document.getElementById(id).style.display =
+      id === screen ? "flex" : "none";
+  });
+
+  window.scrollTo(0, 0);
 }
 
-function returnHome() {
-  document.getElementById("birth").style.display = "none";
-  document.getElementById("welcome").style.display = "flex";
+function showUniverse(date, time, place) {
+
+  document.getElementById("resultDate").textContent =
+    "Fecha: " + date.split("-").reverse().join("/");
+
+  document.getElementById("resultTime").textContent =
+    "Hora: " + time;
+
+  document.getElementById("resultPlace").textContent =
+    place;
+
+  showScreen("universe");
+}
+
+document.getElementById("birthForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const date =
+      document.getElementById("birthDate").value;
+
+    const time =
+      document.getElementById("birthTime").value;
+
+    const place =
+      document.getElementById("birthPlace").value.trim();
+
+    if (!place) {
+      document.getElementById("birthPlace").focus();
+      return;
+    }
+
+    showUniverse(date, time, place);
+  });
+
+function demo() {
+
+  showUniverse(
+    "2026-11-25",
+    "23:33:16",
+    "Funes, Santa Fe, Argentina"
+  );
 }
 
 </script>
