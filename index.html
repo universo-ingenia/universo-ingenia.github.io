@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INGENIA | Astrología & Tarot</title>
-
+<script src="tiempo.js"></script>
 <style>
 * {
   box-sizing: border-box;
@@ -467,30 +467,40 @@ document.getElementById("resultPlace")
 
 const mostrarUniversoOriginal = showUniverse;
 
-showUniverse = function(date, time, place) {
+
+showUniverse = function(date, time, place, zona) {
 
   mostrarUniversoOriginal(date, time, place);
 
   panelAstro.replaceChildren();
-  panelAstro.hidden = true;
-
-};
-
-demo = function() {
-
-  showUniverse(
-    "2026-11-25",
-    "23:33:16",
-    "Funes, Santa Fe, Argentina"
-  );
-
   panelAstro.hidden = false;
 
   try {
 
-    const carta = IngeniaAstro.calcularCarta(
-      "2026-11-26T02:33:16Z"
+    if (!zona) {
+      zona = prompt(
+        "Confirma la zona horaria de nacimiento:",
+        "America/Argentina/Cordoba"
+      );
+    }
+
+    if (!zona || !zona.trim()) {
+      throw new Error("Zona horaria no confirmada.");
+    }
+
+    const fechaUTC = IngeniaTiempo.convertirUTC(
+      date,
+      time,
+      zona.trim()
     );
+
+    const carta = IngeniaAstro.calcularCarta(fechaUTC);
+
+    const infoUTC = document.createElement("p");
+    infoUTC.style.fontSize = "12px";
+    infoUTC.textContent = "UTC: " + fechaUTC;
+    panelAstro.appendChild(infoUTC);
+
 
     const titulo = document.createElement("h3");
 
@@ -546,6 +556,18 @@ demo = function() {
   }
 
 };
+
+demo = function() {
+
+  showUniverse(
+    "2026-11-25",
+    "23:33:16",
+    "Funes, Santa Fe, Argentina",
+    "America/Argentina/Cordoba"
+  );
+
+};
+
 
 </script>
 
