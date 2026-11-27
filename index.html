@@ -7,6 +7,7 @@
 <title>INGENIA | Astrología & Tarot</title>
 <script src="tiempo.js"></script>
   <script src="geo.js"></script>
+  <script src="casas.js"></script>
 <style>
 * {
   box-sizing: border-box;
@@ -496,6 +497,15 @@ showUniverse = function(date, time, place, zona) {
     );
 
     const carta = IngeniaAstro.calcularCarta(fechaUTC);
+    const ubicacion = IngeniaGeo.buscarCiudad(place);
+
+const angulos = ubicacion
+  ? IngeniaCasas.calcularAngulos(
+      fechaUTC,
+      ubicacion.latitud,
+      ubicacion.longitud
+    )
+  : null;
 
     const infoUTC = document.createElement("p");
     infoUTC.style.fontSize = "12px";
@@ -538,7 +548,57 @@ showUniverse = function(date, time, place, zona) {
       panelAstro.appendChild(fila);
 
     });
+if (angulos) {
+  const signos = [
+    "Aries", "Tauro", "Géminis",
+    "Cáncer", "Leo", "Virgo",
+    "Libra", "Escorpio", "Sagitario",
+    "Capricornio", "Acuario", "Piscis"
+  ];
 
+  function formatoAngulo(valor) {
+    const total = Math.round(
+      ((valor % 360 + 360) % 360) * 60
+    ) % 21600;
+
+    const signo = signos[Math.floor(total / 1800)];
+    const grado = Math.floor((total % 1800) / 60);
+    const minuto = total % 60;
+
+    return signo + " " + grado + "° " + minuto + "'";
+  }
+
+  const bloque = document.createElement("div");
+
+  bloque.style.cssText =
+    "margin-top:20px;padding-top:15px;" +
+    "border-top:1px solid #927ca7;";
+
+  const datos = [
+    ["Ascendente", angulos.ascendente],
+    ["Medio Cielo", angulos.medioCielo],
+    ["Descendente", angulos.descendente],
+    ["Fondo del Cielo", angulos.fondoCielo]
+  ];
+
+  datos.forEach(([nombre, valor]) => {
+    const fila = document.createElement("div");
+
+    fila.style.cssText =
+      "display:flex;justify-content:space-between;" +
+      "padding:8px 0;gap:10px;";
+
+    fila.textContent = nombre;
+
+    const posicion = document.createElement("span");
+    posicion.textContent = formatoAngulo(valor);
+
+    fila.appendChild(posicion);
+    bloque.appendChild(fila);
+  });
+
+  panelAstro.appendChild(bloque);
+}
     const nota = document.createElement("p");
 
     nota.style.fontSize = "12px";
