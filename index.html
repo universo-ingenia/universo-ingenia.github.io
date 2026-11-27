@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INGENIA | Astrología & Tarot</title>
 <script src="tiempo.js"></script>
+  <script src="geo.js"></script>
 <style>
 * {
   box-sizing: border-box;
@@ -568,7 +569,25 @@ demo = function() {
 
 };
 
+const mostrarUniversoGeo = showUniverse;
 
+showUniverse = function(date, time, place, zona) {
+
+  const ciudad = IngeniaGeo.buscarCiudad(place);
+
+  if (ciudad) {
+    zona = ciudad.zona;
+    place = ciudad.nombre;
+  }
+
+  return mostrarUniversoGeo(
+    date,
+    time,
+    place,
+    zona
+  );
+
+};
 </script>
 
 </body>
